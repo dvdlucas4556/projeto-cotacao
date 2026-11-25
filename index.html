@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="./style.css">
+  <title>Document</title>
+</head>
+<body>
+  <header>
+    <h1>WIKIMOEDA</h1>
+    <nav>
+      <a href="#">COTAÇÂO</a>
+      <a href="#">WIKI</a>
+      <a href="#">Noticias</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>WIKIMOEDA</h2>
+    <p>Fique atualizado com as últimas cotações, notícias e informações detalhadas sobre diversas moedas, incluindo Real, Dólar e Bitcoin</p>
+  </section>
+
+  <div class="cta">
+    <p>Dólar em disparada: entenda a alta da moeda e o que vem pela frente</p>
+  </div>
+
+  <section class="live-rates">
+    <h3>MOEDAS AO VIVO</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>MOEDA</th>
+          <th>PREÇO</th>
+          <th>Mudança / 24Hrs</th>
+        </tr>
+      </thead>
+      <tbody id="rates-body">
+        <tr>
+          <td>USD | Dolar americano</td>
+          <td id="usd-price">-</td>
+          <td id="usd-change" class="changer"></td>
+        </tr>
+        <tr>
+          <td>GBP : Libras</td>
+          <td id="gbp-price">-</td>
+          <td id="gbp-change" class="changer"></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <script>
+    async function respostaApi() {
+      try {
+        const response = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL,GBP-BRL');
+        const data = await response.json();
+
+        console.log(data);
+
+        const usdRate = data.USDBRL;
+        const gbpRate = data.GBPBRL;
+
+        const usdChangeElement = document.querySelector('#usd-change');
+        const gbpChangeElement = document.querySelector('#gbp-change');
+
+        document.querySelector('#usd-price').textContent = parseFloat(usdRate.bid).toFixed(2);
+        document.querySelector('#gbp-price').textContent = parseFloat(gbpRate.bid).toFixed(2);
+
+        usdChangeElement.textContent = `${parseFloat(usdRate.pctChange).toFixed(2)}% ${usdRate.pctChange > 0 ? '↑' : '↓'}`;
+        gbpChangeElement.textContent = `${parseFloat(gbpRate.pctChange).toFixed(2)}% ${gbpRate.pctChange > 0 ? '↑' : '↓'}`;
+
+        if (usdRate.pctChange > 0) {
+          usdChangeElement.style.color = 'green'
+        } else {
+          usdChangeElement.style.color = 'red'
+        }
+
+        if (gbpRate.pctChange > 0) {
+          gbpChangeElement.style.color = 'green'
+        } else {
+          gbpChangeElement.style.color = 'red'
+        }
+       
+      } catch (error) {
+        
+      }
+    }
+
+    respostaApi();
+  </script>
+</body>
+</html>
